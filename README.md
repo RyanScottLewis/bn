@@ -216,6 +216,49 @@ hero = HeroTransform.execute(data)
 p hero #=> #<Hero:0x007fa2a10e29a0 @name="Gronc">
 ```
 
+### HTTP Adapter
+
+`BN` uses [HTTPI](http://httpirb.com) to send HTTP requests to the Battle.net API.  
+To use different adapters than the default, you can use two different methods.
+
+**Globally**
+
+Setting the default adapter on `HTTPI` itself will cause all HTTP requests to use that adapter by default:
+
+```rb
+HTTPI.adapter = :curb
+```
+
+**Locally**
+
+An `:adapter` option can be passed when initializing an `BN::API::Base` or `BN::Mapper` instance:
+
+```rb
+require "bn/mapper"
+
+mapper = BN::Mapper.new(key: "00000000000000000000000000000000", adapter: :curb)
+```
+
+---
+
+```rb
+require "bn/api/d3"
+
+mapper = BN::API::D3.new(key: "00000000000000000000000000000000", adapter: :curb)
+```
+
+This will use your given adapter instead of the `HTTPI` default adapter.
+
+#### Logging
+
+`HTTPI` by default logs each HTTP request to `$stdout` using a log level of `:debug`.
+
+```rb
+HTTPI.log       = false     # disable logging
+HTTPI.logger    = MyLogger  # change the logger
+HTTPI.log_level = :info     # change the log level
+```
+
 ## Copyright
 
 Copyright © 2015 Ryan Scott Lewis <ryan@rynet.us>.
