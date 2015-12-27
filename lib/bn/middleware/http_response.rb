@@ -12,8 +12,7 @@ module BN
       # @param [#body] response
       # @return [Hash]
       def execute(response)
-        raise Error::Middleware::InvalidHTTPResponse, response: response unless response.respond_to?(:body)
-        raise Error::Middleware::InvalidHTTPResponse, response: response unless response.respond_to?(:code) && (200...300).include?(response.code)
+        raise Error::Middleware::InvalidHTTPResponse, response: response unless response.respond_to?(:body) && response.respond_to?(:code)
 
         body = response.body.to_s
 

@@ -56,7 +56,7 @@ module BN
         raise Error::API::InvalidRegion unless BN::API::REGIONS.keys.include?(region_key)
 
         region = REGIONS[region_key]
-        @locale = region[:locales].first
+        @locale = region[:locales].first unless region[:locales].include?(locale)
 
         region
       end

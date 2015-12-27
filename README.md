@@ -24,33 +24,45 @@ Or you can require individual files/groups of files with
 require "bn/api/d3"
 require "bn/entity/d3"
 ```
+### Mapper
 
-### API
-
-**Mapping**
-
-The `BN::API::Mapper` will send an HTTP request, parse the JSON response body, and create a new instance of
+The `BN::Mapper` will send an HTTP request, parse the JSON response body, and create a new instance of
 the entity associated with the API call.
 
 ```rb
-require "bn/api/mapper"
+require "bn/mapper"
 
-mapper = BN::API::Mapper.new(key: "00000000000000000000000000000000")
+mapper = BN::Mapper.new(key: "00000000000000000000000000000000")
 
 p mapper.d3.profile(battle_tag: "Example#0000") #=> #<BN::Entity::D3::Profile:0x007fa2a10e29a0 @battle_tag="Example#0000" ...>
 ```
 
-If called without arguments, the mapper will return a `BN::API::Mapping` instance, which associates API calls with
+**Regions and Locales**
+
+You can change the API's region and locale by passing the options on initialization or setting the attributes:
+
+```rb
+mapper = BN::Mapper.new(key: "00000000000000000000000000000000", region: :eu)
+mapper.locale = "fr_FR"
+
+p mapper.d3.profile(battle_tag: "Example#0000") #=> #<BN::Entity::D3::Profile:0x007fa2a10e29a0 @battle_tag="Example#0000" ...>
+```
+
+**Mappings**
+
+If called without arguments, the mapper will return a `BN::Mapper::Mapping` instance, which associates API calls with
 `Entity` instances. It also holds the list of middleware which the API HTTP response will go through before returning:
 
 ```rb
-require "bn/api/mapper"
+require "bn/mapper"
 
-mapper = BN::API::Mapper.new(key: "00000000000000000000000000000000")
+mapper = BN::Mapper.new(key: "00000000000000000000000000000000")
 mapping = mapper.d3.profile
 
 p mapping.api_class # => BN::API::D3
 p mapping.api_method # => :profile
+p mapping.region # => :us
+p mapping.locale # => "en_US"
 p mapping.middleware # => [BN::Middleware::HTTPResponse, BN::Middleware::KeyConverter, BN::Middleware::APIError, BN::Middleware::D3::Profile]
 
 mapping.execute(battle_tag: "Example#0000") #=> #<BN::Entity::D3::Profile:0x007fa2a10e29a0 @battle_tag="Example#0000" ...>
@@ -60,7 +72,7 @@ This would allow you to manipulate the middleware before executing.
 
 [Read more about middleware here.](#middleware)
 
-**HTTP**
+### API
 
 This simply sends an HTTP request to the API and returns it.  
 Useful for when you do not need entities or middleware.
@@ -71,6 +83,17 @@ require "bn/api/d3"
 api = BN::API::D3.new(key: "00000000000000000000000000000000")
 
 p api.profile(battle_tag: "Example#0000") #=> #<HTTPI::Response:0x007fa2a0d0a5d0 @code=301 ...>
+```
+
+**Regions and Locales**
+
+You can change the API's region and locale by passing the options on initialization or setting the attributes:
+
+```rb
+api = BN::API::D3.new(key: "00000000000000000000000000000000", region: :eu)
+api.locale = "fr_FR"
+
+p api.profile(battle_tag: "Example#0000") #=> #<BN::Entity::D3::Profile:0x007fa2a10e29a0 @battle_tag="Example#0000" ...>
 ```
 
 ### Entity
