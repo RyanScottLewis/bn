@@ -4,7 +4,7 @@ BN is a [Battle.net](http://battle.net) API adapter and entity mapper.
 
 ## Install
 
-### Bundler: `gem 'bn'`
+### Bundler: `gem "bn"`
 
 ### RubyGems: `gem install bn`
 
@@ -112,8 +112,8 @@ require "bn/middleware/http_response"
 
 uri = URI("https://us.api.battle.net/d3/profile/Example-0000")
 uri.query = URI.encode_www_form(apikey: "00000000000000000000000000000000", locale: "en_US")
-
 response = Net::HTTP.get_response(uri)
+
 data = BN::Middleware::HTTPResponse.execute(response)
 
 p data # => { battle_tag: "Example#0000" }
@@ -148,8 +148,6 @@ api = BN::API::D3.new(key: "00000000000000000000000000000000")
 
 response = api.profile(battle_tag: "Example#0000")
 
-data = BN::Middleware::HTTPResponse.execute(response)
-profile = BN::Middleware::D3::Profile.execute(data)
 profile = BN::Middleware.execute(data, BN::Middleware::HTTPResponse, BN::Middleware::D3::Profile)
 
 p profile #=> #<BN::Entity::D3::Profile:0x007fa2a10e29a0 @battle_tag="Example#0000" ...>
