@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+require "bn/memory/d3"
+
+puts
+puts
+require "pry"
+
+begin
+  BN::Memory::D3::Game.new do
+  #   address = D3::MEMORY_ADDRESSES.object_manager.game_difficulty_handicap
+  #   read(address, 8)
+    binding.pry
+  end
+rescue BN::Error::System => error
+  puts "ERROR: #{error}"
+end
+
+puts
+puts

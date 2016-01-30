@@ -1,5 +1,5 @@
 require "httpi"
-require "bn/helpers/has_attributes"
+require "aspect/has_attributes"
 require "bn/error/api/invalid_key"
 require "bn/error/api/invalid_region"
 require "bn/error/api/invalid_locale"
@@ -8,12 +8,12 @@ module BN
   module API
     # The base class for API requesters.
     class Base
-      include Helpers::HasAttributes
+      include Aspect::HasAttributes
 
       def initialize(attributes={})
         self.region = :us
 
-        super
+        update_attributes(attributes)
 
         raise Error::API::InvalidKey if @key.nil?
       end

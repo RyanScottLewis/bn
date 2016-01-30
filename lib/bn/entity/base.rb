@@ -1,10 +1,14 @@
-require "bn/helpers/has_attributes"
+require "aspect/has_attributes"
 
 module BN
   module Entity
     # The base class for game entities.
     class Base
-      include Helpers::HasAttributes
+      include Aspect::HasAttributes
+
+      def initialize(attributes={})
+        update_attributes(attributes)
+      end
 
       protected
 

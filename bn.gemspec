@@ -8,7 +8,8 @@ Gem::Specification.new do |s|
   # Dependencies
   s.add_dependency "version", "~> 1.0.0"
   s.add_dependency "httpi", "~> 2.4.1"
-  s.add_development_dependency "rake", "~> 10.4.2"
+  s.add_dependency "ffi", "~> 1.9.10"
+  s.add_dependency "aspect", "~> 0.0.1"
 
   # Pragmatically set variables and constants
   s.author        = "Ryan Scott Lewis"
