@@ -1,10 +1,11 @@
 require "ffi"
-require "bn/system/windows"
+require "bn/system/windows/types"
 
 module BN
   module System
     module Windows
       module Kernel32
+        # TODO Documentation for these constants
         PROCESS_QUERY_INFORMATION = 0x04
         PROCESS_QUERY_LIMITED_INFORMATION = 0x10
         PROCESS_ALL_ACCESS = 0x001F0FFF # TODO: Not needed? We're only reading memory here

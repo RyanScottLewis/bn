@@ -1,5 +1,5 @@
 require "ffi"
-require "bn/system/windows"
+require "bn/system/windows/types"
 
 module BN
   module System
