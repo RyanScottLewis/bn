@@ -1,10 +1,10 @@
-require "bn/error/middleware/base"
+require "bn/error/middleware"
 
 module BN
-  module Error
-    module Middleware
+  class Error < StandardError
+    class Middleware < Error
       # Raised when the HTTP response object given is invalid.
-      class InvalidHTTPResponse < Base
+      class InvalidHTTPResponse < Middleware
         # @method response
         # Get the HTTP response.
         #

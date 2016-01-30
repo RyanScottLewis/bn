@@ -1,10 +1,10 @@
-require "bn/error/middleware/base"
+require "bn/error/middleware"
 
 module BN
-  module Error
-    module Middleware
+  class Error < StandardError
+    class Middleware < Error
       # Raised when the JSON API response was an error.
-      class InvalidAPIRequest < Base
+      class InvalidAPIRequest < Middleware
         # @method code
         # Get the code for this API error.
         #
@@ -30,7 +30,7 @@ module BN
         attribute(:reason) { |value| value.to_s }
 
         def to_s
-          "Invalid API request: #{@reason}."
+          "Invalid API request: #{@code} - #{@reason}."
         end
       end
     end

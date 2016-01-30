@@ -1,10 +1,10 @@
-require "bn/error/api/base"
+require "bn/error/api"
 
 module BN
-  module Error
-    module API
+  class Error < StandardError
+    class API < Error
       # Raised when the key is invalid.
-      class InvalidKey < Base
+      class InvalidKey < API
         def to_s
           "The key is invalid."
         end
