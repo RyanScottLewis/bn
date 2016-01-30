@@ -64,23 +64,16 @@ module BN
         end
 
         def format_error_code(code)
-          # specifying 0 will look for LANGID in the following order
-          # 1.Language neutral
-          # 2.Thread LANGID, based on the thread's locale value
-          # 3.User default LANGID, based on the user's default locale value
-          # 4.System default LANGID, based on the system default locale value
-          # 5.US English
-          dwLanguageId = 0
+          error_string = ""
           flags = Kernel32::FORMAT_MESSAGE_ALLOCATE_BUFFER |
                   Kernel32::FORMAT_MESSAGE_FROM_SYSTEM |
                   Kernel32::FORMAT_MESSAGE_ARGUMENT_ARRAY |
                   Kernel32::FORMAT_MESSAGE_IGNORE_INSERTS |
                   Kernel32::FORMAT_MESSAGE_MAX_WIDTH_MASK
-          error_string = ""
 
           # this pointer actually points to a :lpwstr (pointer) since we're letting Windows allocate for us
           FFI::MemoryPointer.new(:pointer, 1) do |buffer_ptr|
-            length = Kernel32.format_message_w(flags, FFI::Pointer::NULL, code, dwLanguageId, buffer_ptr, 0, FFI::Pointer::NULL)
+            length = Kernel32.format_message_w(flags, FFI::Pointer::NULL, code, 0, buffer_ptr, 0, FFI::Pointer::NULL)
             raise Error::System::Windows::InvalidErrorCode, code: code if length == 0
 
             # returns an FFI::Pointer with autorelease set to false, which is what we want
