@@ -3,7 +3,7 @@ require "ffi"
 require "bn/system/windows/kernel32"
 require "bn/system/windows/string"
 
-class ::FFI::Pointer
+class FFI::Pointer
   NULL_HANDLE = 0
   NULL_TERMINATOR_WCHAR = 0
 
@@ -52,7 +52,7 @@ class ::FFI::Pointer
       yield ptr
     ensure
       if ptr && ! ptr.null?
-        raise Error::System::Windows::LocalFreeMemoryLeak if System::Windows::Kernel32.local_free(ptr.address) != FFI::Pointer::NULL_HANDLE
+        raise Error::System::Windows::LocalFreeMemoryLeak if BN::System::Windows::Kernel32.local_free(ptr.address) != FFI::Pointer::NULL_HANDLE
       end
     end
 

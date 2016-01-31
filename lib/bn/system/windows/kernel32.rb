@@ -5,15 +5,17 @@ module BN
   module System
     module Windows
       module Kernel32
-        # TODO Documentation for these constants
-        PROCESS_QUERY_INFORMATION = 0x04
-        PROCESS_QUERY_LIMITED_INFORMATION = 0x10
-        PROCESS_ALL_ACCESS = 0x001F0FFF # TODO: Not needed? We're only reading memory here
-        PROCESS_VM_READ = 0x0010
+
+        # Process Access Rights # TODO Documentation for these constants
+
+        PROCESS_QUERY_LIMITED_INFORMATION = 0x10000000
+        PROCESS_TERMINATE                 = 0x00000001
+        PROCESS_SET_INFORMATION           = 0x00000200
+        PROCESS_QUERY_INFORMATION         = 0x00000400
+        PROCESS_ALL_ACCESS                = 0x001F0FFF
+        PROCESS_VM_READ                   = 0x00000010
 
         # FormatMessage Constants
-
-        # dwFlags
 
         # The function allocates a buffer large enough to hold the formatted message, and places a pointer to the allocated buffer at the address specified by lpBuffer.
         # The lpBuffer parameter is a pointer to an LPTSTR; you must cast the pointer to an LPTSTR (for example, (LPTSTR)&lpBuffer).

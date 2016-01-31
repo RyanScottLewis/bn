@@ -23,7 +23,11 @@ module BN
         end
 
         def window_pid(window_handle)
-          pid = User32.get_window_thread_process_id(window_handle, nil).to_i
+          pid_pointer = FFI::MemoryPointer.new(:dword)
+
+          User32.get_window_thread_process_id(window_handle, pid_pointer)
+          pid = pid_pointer.get_int(0)
+
           raise Error::System::Windows::InvalidPID if pid == 0
 
           pid
@@ -38,26 +42,16 @@ module BN
           window_handle = find_window_by_title(title)
           pid = window_pid(window_handle)
 
-          # permissions = System::Windows::Kernel32::PROCESS_QUERY_INFORMATION | System::Windows::Kernel32::PROCESS_VM_READ
-          permissions = Kernel32::PROCESS_QUERY_LIMITED_INFORMATION
+          # permissions = Kernel32::PROCESS_QUERY_INFORMATION | Kernel32::PROCESS_VM_READ
+          # permissions = Kernel32::PROCESS_QUERY_LIMITED_INFORMATION
+          # permissions = Kernel32::PROCESS_QUERY_INFORMATION | Kernel32::PROCESS_VM_READ
+          permissions = Kernel32::PROCESS_QUERY_INFORMATION | Kernel32::PROCESS_VM_READ
           process_handle = Kernel32.open_process(permissions, false, pid)
 
-          puts ?% * 80
-          p window_handle
-          p pid
-          p process_handle
-          puts ?% * 80
-
-          # raise OpenProcessFailure if process_handle.null?
           if process_handle == 0
-            last_error_code = Kernel32.get_last_error
-            error_message = format_error_code(last_error_code)
+            error_message = format_error_code(Kernel32.get_last_error)
 
-            puts ?^ * 80
-            puts error_message
-            puts ?^ * 80
-
-            raise Error::System::Windows::OpenProcessFailure
+            raise Error::System::Windows::OpenProcessFailure, message: error_message
           end
 
           process_handle

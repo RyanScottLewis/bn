@@ -1,4 +1,5 @@
 require "bn/system/windows"
+require "bn/memory/address"
 
 module BN
   module Memory
@@ -34,31 +35,33 @@ module BN
         def read(address, size=nil)
           raise "Process not opened." unless @open
 
-          if address.is_a?(String)
-            memory_address = MEMORY_ADDRESSES[address]
-
-            size = size || memory_address.size
-            address = memory_address.to_i
-          end
+          address = D3::ADDRESSES.find_child(address) if address.is_a?(String)
+          size ||= address.size if address.is_a?(Address)
 
           address = address.to_i
-          size = size.nil? ? 8 : size.to_i
+          size = size.nil? ? 4 : size.to_i
 
-          output_pointer = FFI::MemoryPointer.new(:pointer)
-          bytes_read_pointer = FFI::MemoryPointer.new(:pointer)
-          address_pointer = FFI::Pointer.new(:pointer, address)
+          output_pointer_type = case size
+            when 4 then :int
+            when 8 then :float
+            else;       :pointer
+          end
 
-          puts ?! * 80
-          p @process_handle
+          output_pointer = if output_pointer_type == :pointer # TODO: Better way to do this?
+            FFI::MemoryPointer.new(output_pointer_type, size)
+          else
+            FFI::MemoryPointer.new(output_pointer_type)
+          end
+          address_pointer = FFI::MemoryPointer.new(:uint, address)
 
           result = System::Windows::Kernel32.read_process_memory(@process_handle, address_pointer, output_pointer, size, nil)
-          raise "Read memory at address 0x'#{address.to_s(16)}' failed." unless result
+          raise "Read memory at address '#{address.to_s}' failed." unless result
 
-          p output_pointer.get_int(0)
-          p output_pointer
-          puts ?! * 80
-
-          output_pointer
+          case output_pointer_type
+            when :int then output_pointer.get_int(0)
+            when :float then output_pointer.get_float(0)
+            when :pointer then output_pointer.get_string(0)
+          end
         end
 
         def close

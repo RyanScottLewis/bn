@@ -4,6 +4,7 @@ module BN
   module Memory
     # Additive memory address dictionary tree with dynamic method getters and setters.
     # TODO: Documentation
+    # TODO: Add recursively add children from hash to be able to load from file instead of defining in code in Memory::D3
     class Address
       include Enumerable
       include Aspect::HasAttributes
@@ -11,7 +12,7 @@ module BN
       def initialize(attributes={})
         @children = []
         @offset = 0
-        @size = 8
+        @size = 4 # 4 = int, 8 = long
 
         update_attributes(attributes)
 
@@ -94,7 +95,6 @@ module BN
 
         find_child_by_query(query)
       end
-      alias_method :[], :find_child
 
       def find_child_by_name(name)
         name = sanitize_name(name)
@@ -123,19 +123,21 @@ module BN
       end
 
       # Absolute position
-      def to_i
-        @parent.nil? ? @offset : @parent.to_i + @offset
+      def to_i(index=0)
+        offset = @offset + (@size * index)
+
+        @parent.nil? ? offset : @parent.to_i + offset
       end
 
-      def to_s
-        "0x" + to_i.to_s(16)
+      def to_s(index=0)
+        "0x" + to_i(index).to_s(16)
       end
 
       def method_missing(name, *arguments)
         raise ArgumentError, "wrong number of arguments (#{arguments.length} for 0..1)" if arguments.length > 1
         set_child(name, arguments[0]) if arguments.length == 1
 
-        self[name]
+        self.set_child(name)
       end
 
       protected
