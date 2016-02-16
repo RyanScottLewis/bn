@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.add_dependency "version", "~> 1.0.0"
   s.add_dependency "httpi", "~> 2.4.1"
   s.add_dependency "ffi", "~> 1.9.10"
-  s.add_dependency "aspect", "~> 0.0.1"
+  s.add_dependency "aspect", "~> 0.0.2"
 
   # Pragmatically set variables and constants
   s.author        = "Ryan Scott Lewis"

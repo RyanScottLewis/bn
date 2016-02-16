@@ -220,7 +220,8 @@ module BN
         #
         #   If the function fails, the return value is 0 (zero). To get extended error information, call GetLastError.
         #   The function fails if the requested read operation crosses into an area of the process that is inaccessible.
-        attach_function :read_process_memory, :ReadProcessMemory, [:handle, :lpcvoid, :lpvoid, :size_t, :pointer], :bool
+        attach_function :read_process_memory, :ReadProcessMemory, [:handle, :uint, :lpvoid, :size_t, :pointer], :bool
+        # attach_function :read_process_memory, :ReadProcessMemory, [:handle, :lpcvoid, :lpvoid, :size_t, :pointer], :bool
       end
     end
   end

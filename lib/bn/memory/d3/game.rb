@@ -20,7 +20,6 @@ module BN
 
         def open(&block)
           @process_handle = System::Windows.open_process_by_title(WINDOW_TITLE)
-
           @open = true
 
           if block_given?
@@ -32,11 +31,23 @@ module BN
           end
         end
 
+        def addresses
+          D3::ADDRESSES
+        end
+
         def read(address, size=nil)
           raise "Process not opened." unless @open
 
           address = D3::ADDRESSES.find_child(address) if address.is_a?(String)
           size ||= address.size if address.is_a?(Address)
+
+          if size.is_a?(Symbol)
+            size = case size
+            when :int   then 4
+            when :float then 8
+            else;            4
+            end
+          end
 
           address = address.to_i
           size = size.nil? ? 4 : size.to_i
@@ -47,15 +58,12 @@ module BN
             else;       :pointer
           end
 
-          output_pointer = if output_pointer_type == :pointer # TODO: Better way to do this?
-            FFI::MemoryPointer.new(output_pointer_type, size)
-          else
-            FFI::MemoryPointer.new(output_pointer_type)
-          end
-          address_pointer = FFI::MemoryPointer.new(:uint, address)
+          output_pointer = FFI::MemoryPointer.new(size)
+          address_pointer = FFI::MemoryPointer.new(:pointer)
+          address_pointer.put_pointer(0, address)
 
-          result = System::Windows::Kernel32.read_process_memory(@process_handle, address_pointer, output_pointer, size, nil)
-          raise "Read memory at address '#{address.to_s}' failed." unless result
+          result = System::Windows::Kernel32.read_process_memory(@process_handle, address, output_pointer, size, nil)
+          raise "Read memory at address 0x#{address.to_s(16)} failed." unless result
 
           case output_pointer_type
             when :int then output_pointer.get_int(0)

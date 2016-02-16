@@ -7,8 +7,7 @@ require "pry"
 
 begin
   BN::Memory::D3::Game.new do
-  #   address = D3::MEMORY_ADDRESSES.object_manager.game_difficulty_handicap
-  #   read(address, 8)
+    # p read("gameplay_preferences.show_clock")
     binding.pry
   end
 rescue BN::Error::System => error

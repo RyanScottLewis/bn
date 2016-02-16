@@ -82,7 +82,7 @@ module BN
       end
       alias_method :[]=, :set_child
 
-      def delete_child(name)
+      def delete_child(name) # TODO: Remove method
         child = find_child_by_name(name)
         return if child.nil?
 
